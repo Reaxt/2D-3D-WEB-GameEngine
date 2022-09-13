@@ -1,5 +1,5 @@
 import Game from "./Game.js";
-import { GameObject } from "./GameObject.js";
+import { GameObject } from "./GameObjects/GameObject.js";
 
 export default abstract class State {
 	public objects: GameObject[]

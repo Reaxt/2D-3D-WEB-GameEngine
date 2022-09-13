@@ -1,5 +1,5 @@
 import Game from "./Game.js";
-import { GameObject } from "./GameObject.js";
+import { GameObject } from "./GameObjects/GameObject.js";
 import State from "./State.js";
 
 export default class StateManager {
@@ -17,9 +17,11 @@ export default class StateManager {
 
 	add(stateName:string, state:State) {
 		this.States[stateName] = state;
-
+		this.currentState = this.States[stateName];
 	}
-
+	init() {
+		this.currentState?.enter(null);
+	}
 	change(stateName:string, enterParameters:any, doExitProcess = false) {
 		this.currentState?.exit();
 		if(doExitProcess && this.currentState != null) {this.exitProcesses.push(this.currentState)} //exit process is used for exit animations and transitions
@@ -35,10 +37,19 @@ export default class StateManager {
 
 	
 	render(): GameObject[] {
+		let objs: GameObject[] = [];
+		
 		if(this.currentState != null) {
-			return this.currentState.render(this.DeltaTime);
+			objs = this.currentState.render(this.DeltaTime);
 		} else {
-			return [];
+			objs = [];
 		}
+		this.exitProcesses.forEach(x=> {
+			let exitObjs = x.render(this.DeltaTime);
+			exitObjs.forEach(x=> {
+				objs.push(x);
+			})
+		})
+		return objs;
 	}
 }

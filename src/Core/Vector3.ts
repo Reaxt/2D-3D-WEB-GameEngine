@@ -1,6 +1,6 @@
 import { lerp } from "../Util";
 
-export default class Vector3 {
+export default class GVector3 {
     public x:number
     public y:number
     public z:number
@@ -12,15 +12,15 @@ export default class Vector3 {
     /**
      * Add
      */
-    public Add(otherVector:Vector3) {
+    public Add(otherVector:GVector3) {
         this.x += otherVector.x;
         this.y += otherVector.y;
         this.z += otherVector.z;
     }
-    public static Lerp(pos1:Vector3, pos2:Vector3, percent:number) :Vector3 {
+    public static Lerp(pos1:GVector3, pos2:GVector3, percent:number) :GVector3 {
         let x = lerp(pos1.x, pos2.x, percent);
         let y = lerp(pos1.y, pos2.y, percent);
         let z = lerp(pos1.z, pos2.z, percent);
-        return new Vector3(x,y,z);
+        return new GVector3(x,y,z);
     }
 }

@@ -1,17 +1,20 @@
 import { Vector3 } from "three";
-import Game from "./Game.js";
+import Game from "../Game.js";
 
 export abstract class GameObject {
-    public Position:Vector3;
+    
     public Alive:boolean;
     public Visible:boolean;
-    constructor(x:number, y:number, z:number) {
-        this.Position = new Vector3(x,y,z);
+    public Name:string;
+
+    constructor(name:string) {
+        this.Name = name;
         this.Alive = true;
         this.Visible = true;
     }
+    SysUpdate(dt:number,gameRef:Game) {
+        this.update(dt,gameRef);
+    };
     abstract update(dt:number, gameRef:Game):void;
-
-    abstract render(dt:number):void;
 
 }
