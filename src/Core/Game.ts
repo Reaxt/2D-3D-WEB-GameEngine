@@ -33,12 +33,17 @@ export default class Game {
     private update(dt:number):void {
         this.StateManagerInstance.update(dt,this);
         this.SysObjects = this.SysObjects.filter(x=>x.Alive);
-        this.SysObjects.forEach(x=>x.SysUpdate(dt,this));
-        
+        this.SysObjects.forEach(x=> {
+            x.SysUpdate(dt,this)
+            x.Visuals = x.Visuals.filter(x=>x.Alive);
+        });
+    
     }
     private render(dt:number):void {
         let objs = this.StateManagerInstance.render();
-        this.SysObjects.filter(x=>x.Visible).forEach(y => objs.push(y));
+        this.SysObjects.filter(x=>x.Visible).forEach(x => {
+            x.Visuals.forEach(x=>objs.push(x));
+        });
         this.ScreenManagerInstance.Render(objs, dt, this);
 
     }

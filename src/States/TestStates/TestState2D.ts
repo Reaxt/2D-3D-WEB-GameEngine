@@ -1,12 +1,12 @@
 import Game from "../../Core/Game";
 import Easing from "../../Core/GameObjects/Easing";
 import { GameObject } from "../../Core/GameObjects/GameObject";
-import PlainBox2D from "../../Core/GameObjects/PlainBoxObj2D";
+import StandardState from "../../Core/StandardState";
 import State from "../../Core/State";
 import MouseFollowEaseTest from "../../GameObjects/TestObjects/MouseFollowEaseTest";
 import { easeInOutBack, easeOutExpo } from "../../Util";
 
-export default class TestState2D extends State {
+export default class TestState2D extends StandardState {
     enter(params: any): void {
         //throw new Error("Method not implemented.");
         let test = new MouseFollowEaseTest();
@@ -20,15 +20,6 @@ export default class TestState2D extends State {
     }
     exitProcess(dt: number): void {
         //throw new Error("Method not implemented.");
-    }
-    update(dt: number, gameRef: Game): void {
-        //throw new Error("Method not implemented.");
-        this.objects.forEach(x=>x.SysUpdate(dt,gameRef));
-    }
-    render(dt: number): GameObject[] {
-        //throw new Error("Method not implemented.");
-        console.log(`passing ${this.objects.length}`)
-        return this.objects;
     }
     
 }

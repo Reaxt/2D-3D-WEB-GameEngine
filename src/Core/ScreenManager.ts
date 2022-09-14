@@ -1,7 +1,7 @@
 import { Vector2, WebGLRenderer } from "three";
 import Game from "./Game";
 import { GameObject } from "./GameObjects/GameObject";
-import GameObject2D from "./GameObjects/GameObject2D";
+import RenderComponent from "./Rendering/RenderComponent";
 import GVector2 from "./Vector2";
 export const LOCAL_WIDTH:number = 1280;
 export const LOCAL_HEIGHT:number = 720;
@@ -15,6 +15,9 @@ export default class ScreenManager {
     private context2D : CanvasRenderingContext2D;
     private context3D : WebGLRenderer;
     private CanvasRect : DOMRect
+    public get Context2D():CanvasRenderingContext2D {
+        return this.context2D;
+    } 
     constructor() {
 
         let canvas = document.getElementById('FlatCanvas') as HTMLCanvasElement;
@@ -40,18 +43,15 @@ export default class ScreenManager {
     public LocalToCanvas(x:number,y:number):GVector2 {
         return new GVector2((x/LOCAL_WIDTH)*ACTUAL_DRAW_WIDTH, (y/LOCAL_HEIGHT)*ACTUAL_DRAW_HEIGHT);
     }
-    public Render(objs:GameObject[], dt:number,gameRef:Game) {
+    public DivisionScale():GVector2 {
+        return new GVector2(LOCAL_WIDTH/ACTUAL_DRAW_WIDTH, LOCAL_HEIGHT/ACTUAL_DRAW_HEIGHT)
+    }
+    public Render(objs:RenderComponent[], dt:number,gameRef:Game) {
         this.context2D.clearRect(0,0,ACTUAL_DRAW_WIDTH,ACTUAL_DRAW_HEIGHT);
-        console.log('renderBegin');
+        console.log(objs.length);
         objs.forEach(obj=> {
-            if(!obj.Visible)return;
-            
-            //2d
-            if(obj instanceof GameObject2D) {
-                obj.Render(this.context2D,this);
-                console.log('drawing')
-            }
+            if(!obj.Alive)return;
+            obj.render(this);
         })
-        console.log('renderEnd');
     }
 }

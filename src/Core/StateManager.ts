@@ -1,5 +1,6 @@
 import Game from "./Game.js";
 import { GameObject } from "./GameObjects/GameObject.js";
+import RenderComponent from "./Rendering/RenderComponent.js";
 import State from "./State.js";
 
 export default class StateManager {
@@ -36,8 +37,8 @@ export default class StateManager {
 	}
 
 	
-	render(): GameObject[] {
-		let objs: GameObject[] = [];
+	render(): RenderComponent[] {
+		let objs: RenderComponent[] = [];
 		
 		if(this.currentState != null) {
 			objs = this.currentState.render(this.DeltaTime);

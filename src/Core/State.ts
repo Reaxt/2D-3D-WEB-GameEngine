@@ -1,5 +1,6 @@
 import Game from "./Game.js";
 import { GameObject } from "./GameObjects/GameObject.js";
+import RenderComponent from "./Rendering/RenderComponent.js";
 
 export default abstract class State {
 	public objects: GameObject[]
@@ -14,5 +15,5 @@ export default abstract class State {
 
 	abstract update(dt:number, gameRef:Game):void;
 
-	abstract render(dt:number):GameObject[];
+	abstract render(dt:number):RenderComponent[];
 }

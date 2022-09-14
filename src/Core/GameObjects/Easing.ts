@@ -9,10 +9,12 @@ export default class Easing {
     public endAfterEase:boolean;
     private easeHappening:boolean;
     public relative:boolean;
+    private onEaseEnd:null|(()=>void)
     public get EaseHappening():boolean {
         return this.easeHappening;
     }
-    constructor(easePositions:[number,number][], time:number, easing:(a:number)=> number = easeLinear, delayStart:number = 0, endEaseAfter:boolean = true, relative:boolean = false) {
+    private easeEnded:boolean;
+    constructor(easePositions:[number,number][], time:number, easing:(a:number)=> number = easeLinear, delayStart:number = 0, endEaseAfter:boolean = true, relative:boolean = false, onEaseEnd:null|(()=>void)=null) {
         this.easePositions = easePositions;
         this.duration = time;
         this.time = 0;
@@ -21,6 +23,8 @@ export default class Easing {
         this.easeHappening = true;
         this.relative = relative;
         this.easing = easing;
+        this.onEaseEnd = onEaseEnd;
+        this.easeEnded = false;
     }
     public update(dt:number):number[] {
         this.time += dt;
@@ -37,6 +41,14 @@ export default class Easing {
         } else if(this.time >= this.delayStart+this.duration) {
             if(this.endAfterEase) this.easeHappening = false;
             this.easePositions.forEach(x=>positions.push(x[1]));
+            if(!this.easeEnded) {
+                this.easeEnded = true;
+                console.log("ough...")
+                if(this.onEaseEnd != null) {
+                    console.log("yea");
+                    this.onEaseEnd();
+                }
+            }
         }
         return positions;
         //go through everything
