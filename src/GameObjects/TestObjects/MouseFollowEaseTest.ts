@@ -19,12 +19,13 @@ export default class MouseFollowEaseTest extends GameObject{
         super("MouseFollower");
         let grph = new Graphic("./img/sprite_sheet.png",1152, 1536);
 
-        this.box = new Sprite2D(grph,0,0,32,16,0,0,0.125,0);
+        this.box = new Sprite2D(grph,0,0,32,16,0,0,1,0);
         this.clickedPos = this.box.position;
         this.prepEase = false;
         this.Visuals.push(this.box);
         this.continue = true;
-        this.box2 = new PlainBox3D(new GVector3(0,0,0), new GVector3(1,1,1));
+        this.box2 = new PlainBox3D(new GVector3(0,0,-10), new GVector3(1,1,1));
+        /*
         this.box2.easeManager.AddEase(new Easing(
             [[0,1],[0,1],[0,-1]],
             3,
@@ -32,7 +33,7 @@ export default class MouseFollowEaseTest extends GameObject{
             1,
             true,
             false
-        ))
+        )) */
         this.Visuals.push(this.box2);
     }
     update(dt: number, gameRef: Game): void {
@@ -54,8 +55,10 @@ export default class MouseFollowEaseTest extends GameObject{
         } else if(gameRef.InputManagerInstance.mouseDown) {
             this.prepEase = true;
         }
-        this.box2.rotation.x += 0.1;
-        this.box2.rotation.y += 0.1;
+        //this.box2.rotation.x += 0.1;
+        //this.box2.rotation.y += 0.1;
+        this.box2.position = gameRef.ScreenManagerInstance.ScreenToWorldPos(this.box.position,-10);
+        console.log(this.box.position);
     }
     
 }

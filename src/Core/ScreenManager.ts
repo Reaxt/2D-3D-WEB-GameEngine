@@ -1,8 +1,10 @@
-import { Camera, PerspectiveCamera, Scene, Vector2, WebGLRenderer } from "three";
+import * as THREE from "three";
+//import { Camera, Object3D, PerspectiveCamera, Scene, Vector2, WebGLRenderer } from "three";
 import Game from "./Game";
 import { GameObject } from "./GameObjects/GameObject";
 import RenderComponent from "./Rendering/RenderComponent";
 import GVector2 from "./Vector2";
+import GVector3 from "./Vector3";
 export const LOCAL_WIDTH:number = 1280;
 export const LOCAL_HEIGHT:number = 720;
 
@@ -14,13 +16,13 @@ const FOV:number = 90;
 export default class ScreenManager {
     
     private context2D : CanvasRenderingContext2D;
-    private context3D : WebGLRenderer;
+    private context3D : THREE.WebGLRenderer;
     private CanvasRect : DOMRect
     public get Context2D():CanvasRenderingContext2D {
         return this.context2D;
     } 
-    public Cam3D : Camera;
-    public Scene3D: Scene;
+    public Cam3D : THREE.Camera;
+    public Scene3D: THREE.Scene;
 
     constructor() {
         //#region 2dInit
@@ -34,14 +36,14 @@ export default class ScreenManager {
         //#endregion
         //#region 3dInit
         let threeCanvas = document.getElementById('ThreeCanvas') as HTMLCanvasElement;
-        this.context3D = new WebGLRenderer({canvas: threeCanvas})
+        this.context3D = new THREE.WebGLRenderer({canvas: threeCanvas})
         //threeCanvas.width = ACTUAL_DRAW_HEIGHT;
         //threeCanvas.height = ACTUAL_DRAW_WIDTH;
         this.context3D.setSize(ACTUAL_DRAW_WIDTH, ACTUAL_DRAW_HEIGHT);
         let elm = document.querySelector("#FlatCanvas");
         this.CanvasRect = canvas.getBoundingClientRect();
-        this.Scene3D = new Scene();
-        this.Cam3D = new PerspectiveCamera(FOV, LOCAL_WIDTH/LOCAL_HEIGHT, 0.1, 1000);
+        this.Scene3D = new THREE.Scene();
+        this.Cam3D = new THREE.PerspectiveCamera(FOV, LOCAL_WIDTH/LOCAL_HEIGHT, 0.1, 1000);
         this.Cam3D.position.z=5;
         //#endregion
 
@@ -66,5 +68,30 @@ export default class ScreenManager {
             obj.render(this);
         })
         this.context3D.render(this.Scene3D, this.Cam3D);
+    }
+    public WorldPosToScreen(object:THREE.Object3D): GVector2 {
+        let vector = new THREE.Vector3;
+        vector = vector.setFromMatrixPosition(object.matrixWorld);
+        vector.project(this.Cam3D);
+        let GVect:GVector2 = new GVector2(0,0);
+        let wHalf = ACTUAL_DRAW_WIDTH/2;
+        let hHalf = ACTUAL_DRAW_HEIGHT/2;
+        GVect.x = (vector.x * wHalf)+wHalf;
+        GVect.y = (vector.y*hHalf)+hHalf;
+        return GVect;
+    }
+    public ScreenToWorldPos(pos:GVector2, Depth:number): GVector3 {
+        let x = ((pos.x/LOCAL_WIDTH)*2) -1
+        let y = 1-((pos.y/LOCAL_HEIGHT)*2) 
+        let vec = new THREE.Vector3();
+        let posS = new THREE.Vector3();
+        vec.set(x,y,0.5);
+        vec = vec.unproject(this.Cam3D);
+        vec.sub(this.Cam3D.position).normalize;
+        let distance = ( Depth - this.Cam3D.position.z ) / vec.z;
+        posS.copy(this.Cam3D.position).add(vec.multiplyScalar(distance));
+        console.log(x);
+        return new GVector3(posS.x,posS.y,posS.z);
+
     }
 }

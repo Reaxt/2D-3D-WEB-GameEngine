@@ -34,7 +34,7 @@ export default class InputManager {
                         //we're in!
                         this._mouseX = (mouseevent.clientX-this.CanvasRect.left)/this.CanvasRect.width;
                         this._mouseY = (mouseevent.clientY-this.CanvasRect.top)/this.CanvasRect.height;
-                        console.log(`${this._mouseX},${this._mouseY}`);
+                        //console.log(`${this._mouseX},${this._mouseY}`);
                     }
                 }
             } else {
