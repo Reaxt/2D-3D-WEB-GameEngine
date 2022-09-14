@@ -24,8 +24,9 @@ export default abstract class RenderComponent2D extends RenderComponent {
         this.renderScale = this.scale; 
     }
     SysUpdate(dt: number, gameRef: Game): void {
+        this.position = this.easeManager.UpdateVec(dt, this.position);
+        this.scale = this.scaleEase.UpdateVec(dt, this.scale);
+        this.renderScale=this.scale;
         this.renderPos=this.position;
-        this.renderPos = this.easeManager.UpdateVec(dt, this.renderPos);
-        this.renderScale = this.scaleEase.UpdateVec(dt, this.renderScale);
     }
 } 
