@@ -12,7 +12,7 @@ export default class Game {
     constructor() {
         this.ScreenManagerInstance = new ScreenManager();
         this.StateManagerInstance = new StateManager();
-        this.InputManagerInstance = new InputManager();
+        this.InputManagerInstance = new InputManager(this.ScreenManagerInstance);
         this.SysObjects = [];
         this.lastTime = 0;
     }

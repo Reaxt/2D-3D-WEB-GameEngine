@@ -1,19 +1,22 @@
-import { LOCAL_HEIGHT, LOCAL_WIDTH } from "./ScreenManager";
+import { IMouseEvent, IPointerEvent } from "babylonjs/Events/deviceInputEvents";
+import ScreenManager, { LOCAL_HEIGHT, LOCAL_WIDTH } from "./ScreenManager";
 
 export default class InputManager {
     public readonly Keys: {[key:string]:boolean} 
     private _mouseX:number;
     public get mouseX():number {
-        return this._mouseX*LOCAL_WIDTH;
+        return this.screen.Scene3D.pointerX;
     }
     public get mouseY():number{
-        return (this._mouseY*LOCAL_HEIGHT);
+        return this.screen.Scene3D.pointerY;
     }
     private _mouseY:number;
     private _mouseClick:boolean;
     public get mouseDown():boolean{return this._mouseClick;}
     private CanvasRect?:DOMRect;
-    constructor() {
+    private screen:ScreenManager;
+    constructor(screen:ScreenManager) {
+        this.screen = screen;
         this._mouseClick = false;
         this.Keys = {};
         document.addEventListener('keydown', event => {
@@ -27,7 +30,10 @@ export default class InputManager {
         this._mouseY = 0;
         let elm = document.querySelector("#FlatCanvas");
         this.CanvasRect = elm?.getBoundingClientRect();
-        document.onmousemove = (mouseevent:MouseEvent) =>{
+
+        /*
+        screen.Scene3D.onPointerDown = (mouseevent:IMouseEvent) =>{
+            
             if(this.CanvasRect != null) {
                 if(mouseevent.clientX>=this.CanvasRect.left && mouseevent.clientX <= this.CanvasRect.right){
                     if(mouseevent.clientY >= this.CanvasRect.top && mouseevent.clientY <= this.CanvasRect.bottom) {
@@ -39,14 +45,19 @@ export default class InputManager {
                 }
             } else {
                 console.log("No canvas rect! mouse input wont work!");
-            }
+            } 
 
-        }
-        document.onmousedown=(mouse:MouseEvent) => {
+        } */
+        screen.Scene3D.onPointerDown=(mouse:IPointerEvent) => {
+            //check
+            if(!ScreenManager.pointerLocked) {
+                screen.requestLock();
+            }
             this._mouseClick = true;
         }
-        document.onmouseup=(mouse:MouseEvent) => {
+        screen.Scene3D.onPointerUp=(mouse:IPointerEvent) => {
             this._mouseClick = false;
         }
+        
     }
 }

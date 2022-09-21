@@ -1,8 +1,7 @@
 import { Vector3 } from "three";
-import Game from "../Game.js";
-import RenderComponent from "../Rendering/RenderComponent.js";
-import RenderComponent2D from "../Rendering/RenderComponent2D.js";
-import ScreenManager from "../ScreenManager.js";
+import Game from "../Game";
+import RenderComponent from "../Rendering/RenderComponent";
+import ScreenManager from "../ScreenManager";
 
 export abstract class GameObject {
     

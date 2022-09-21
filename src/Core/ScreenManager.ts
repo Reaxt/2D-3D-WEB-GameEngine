@@ -14,32 +14,25 @@ const FOV:number = 90;
 //import THREE from "three";
 export default class ScreenManager {
     
-    private context2D : CanvasRenderingContext2D;
     private engine : BABYLON.Engine;
     private CanvasRect : DOMRect
-    public get Context2D():CanvasRenderingContext2D {
-        return this.context2D;
-    } 
-    public Cam3D : BABYLON.Camera;
+    private canvas:HTMLCanvasElement;
+    public Cam3D : BABYLON.UniversalCamera;
     public Scene3D: BABYLON.Scene;
     private Light: BABYLON.Light;
+    public static pointerLocked:boolean = false;
     constructor() {
         //#region 2dInit
-        let canvas = document.getElementById('FlatCanvas') as HTMLCanvasElement;
-        if(canvas == null) throw new Error("Null 2D Canvas");
-        canvas.width = ACTUAL_DRAW_WIDTH;
-        canvas.height = ACTUAL_DRAW_HEIGHT;
-        let temp = canvas.getContext("2d");
-        if(temp == null) throw new Error("Null2d!!")
-        this.context2D = temp;
         //#endregion
         //#region 3dInit
 
-        let threeCanvas = document.getElementById('ThreeCanvas') as HTMLCanvasElement;
-        this.engine = new BABYLON.Engine(threeCanvas, true);
+        this.canvas = document.getElementById('ThreeCanvas') as HTMLCanvasElement;
+        this.engine = new BABYLON.Engine(this.canvas, true);
         this.Scene3D = new BABYLON.Scene(this.engine);
-        this.Cam3D = new BABYLON.Camera("camera", BABYLON.Vector3.Zero(), this.Scene3D);
-        this.Cam3D.attachControl(threeCanvas, true);
+        this.Cam3D = new BABYLON.UniversalCamera("camera", new BABYLON.Vector3(0, 0, -10), this.Scene3D);
+        this.Cam3D.inertia = 0;
+        this.Cam3D.setTarget(BABYLON.Vector3.Zero());
+        this.Cam3D.attachControl(this.canvas, true);
         BABYLON.SceneLoader.ImportMeshAsync("", "https://assets.babylonjs.com/meshes/", "box.babylon");
         this.engine.runRenderLoop(() => {
             this.Scene3D.render();
@@ -47,8 +40,12 @@ export default class ScreenManager {
         this.Light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0), this.Scene3D);
         
         
-        this.CanvasRect = canvas.getBoundingClientRect();
+        this.CanvasRect = this.canvas.getBoundingClientRect();
         console.log("one");
+        document.addEventListener("pointerlockchange", this.pointerlockchange, false);
+        document.addEventListener("mspointerlockchange", this.pointerlockchange, false);
+        document.addEventListener("mozpointerlockchange", this.pointerlockchange, false);
+        document.addEventListener("webkitpointerlockchange", this.pointerlockchange, false);
         /*
         this.context3D = new THREE.WebGLRenderer({canvas: threeCanvas})
         //threeCanvas.width = ACTUAL_DRAW_HEIGHT;
@@ -62,6 +59,24 @@ export default class ScreenManager {
         //#endregion
 
     }
+    private pointerlockchange = function () {
+		var controlEnabled = document.pointerLockElement || null;
+		
+		// If the user is already locked
+		if (!controlEnabled) {
+			//camera.detachControl(canvas);
+			ScreenManager.pointerLocked = false;
+		} else {
+			//camera.attachControl(canvas);
+			ScreenManager.pointerLocked = true;
+		}
+	};
+	public requestLock() {
+        this.canvas.requestPointerLock = this.canvas.requestPointerLock || this.canvas.msRequestPointerLock || this.canvas.mozRequestPointerLock || this.canvas.webkitRequestPointerLock;
+        this.canvas.requestPointerLock();
+    }
+	// Attach events to the document
+
     /**
      * PercentToScreenCoord2D
      */
@@ -75,7 +90,7 @@ export default class ScreenManager {
         return new GVector2(LOCAL_WIDTH/ACTUAL_DRAW_WIDTH, LOCAL_HEIGHT/ACTUAL_DRAW_HEIGHT)
     }
     public Render(objs:RenderComponent[], dt:number,gameRef:Game) {
-        this.context2D.clearRect(0,0,ACTUAL_DRAW_WIDTH,ACTUAL_DRAW_HEIGHT);
+        //this.context2D.clearRect(0,0,ACTUAL_DRAW_WIDTH,ACTUAL_DRAW_HEIGHT);
         //console.log(objs.length);
         objs.forEach(obj=> {
             if(!obj.Alive)return;
@@ -97,13 +112,13 @@ export default class ScreenManager {
         return new GVector3(0,0,0);
     }
     public ScreenToWorldPos(pos:GVector2, Depth:number): GVector3 {
-        let x = ((pos.x/LOCAL_WIDTH))*this.engine.getRenderWidth();
-        let y = ((pos.y/LOCAL_HEIGHT))*this.engine.getRenderHeight();
+        //let x = ((pos.x/LOCAL_WIDTH))*this.engine.getRenderWidth();
+        //let y = ((pos.y/LOCAL_HEIGHT))*this.engine.getRenderHeight();
         //let vec = new THREE.Vector3();
         //let posS = new THREE.Vector3();
         //vec.set(x,y,0.5);
 
-        let vec = BABYLON.Vector3.Unproject(new BABYLON.Vector3(x,y,Depth),this.engine.getRenderWidth(),this.engine.getRenderHeight(), BABYLON.Matrix.Identity(), this.Cam3D.getViewMatrix(), this.Cam3D.getProjectionMatrix());
+        let vec = BABYLON.Vector3.Unproject(new BABYLON.Vector3(pos.x,pos.y,Depth),this.engine.getRenderWidth(),this.engine.getRenderHeight(), BABYLON.Matrix.Identity(), this.Cam3D.getViewMatrix(), this.Cam3D.getProjectionMatrix());
         return new GVector3(vec.x,vec.y,vec.z);
         
 
