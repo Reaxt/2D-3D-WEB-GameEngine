@@ -1,7 +1,7 @@
-import { GameObject } from "./GameObjects/GameObject.js";
-import InputManager from "./InputManager.js";
-import ScreenManager from "./ScreenManager.js"
-import StateManager from "./StateManager.js";
+import { GameObject } from "./GameObjects/GameObject";
+import InputManager from "./InputManager";
+import ScreenManager from "./ScreenManager"
+import StateManager from "./StateManager";
 
 export default class Game {
     public ScreenManagerInstance:ScreenManager;

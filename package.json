@@ -3,24 +3,29 @@
     "tsc": "tsc --project ./tsconfig.json",
     "ts-node": "ts-node",
     "bundle": "tsc-bundle ./src/main.ts",
-    "rollup": "rollup",
-    "build": "rimraf dist && tsc --project ./tsconfig.json && rollup -c rollup.config.js"
+    "build": "webpack"
   },
   "devDependencies": {
     "@open-wc/building-rollup": "^2.0.2",
     "@rollup/plugin-node-resolve": "^14.1.0",
-    "@types/dat.gui": "^0.7.7",
-    "@types/three": "^0.144.0",
     "rimraf": "^3.0.2",
-    "ts-loader": "^9.3.1",
+    "ts-loader": "^9.4.1",
     "ts-node": "^10.9.1",
-    "typescript": "^4.8.3"
+    "typescript": "^4.8.3",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
   },
   "dependencies": {
+    "babylonjs": "^5.24.0",
+    "babylonjs-gui": "^5.24.0",
+    "babylonjs-loaders": "^5.24.0",
+    "babylonjs-materials": "^5.24.0",
+    "babylonjs-post-process": "^5.24.0",
+    "babylonjs-procedural-textures": "^5.24.0",
+    "babylonjs-serializers": "^5.24.0",
     "dat.gui": "^0.7.9",
     "rollup": "^2.79.0",
     "rollup-plugin-node-resolve": "^5.2.0",
-    "three": "^0.144.0",
     "typescript-bundle": "^1.0.18"
   }
 }

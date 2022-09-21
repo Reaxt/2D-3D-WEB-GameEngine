@@ -100,6 +100,14 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
     "outDir": "out-tsc",
-    "rootDir": "./"
+    "rootDir": "./",
+    "types": [
+      "babylonjs",
+      "babylonjs-materials",
+      "babylonjs-loaders",
+      "babylonjs-post-process",
+      "babylonjs-procedural-textures",
+      "babylonjs-gui"
+    ]
   }
 }

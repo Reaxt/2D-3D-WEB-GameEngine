@@ -1,5 +1,4 @@
-import * as THREE from "three";
-//import { Camera, Object3D, PerspectiveCamera, Scene, Vector2, WebGLRenderer } from "three";
+import * as BABYLON from 'babylonjs';
 import Game from "./Game";
 import { GameObject } from "./GameObjects/GameObject";
 import RenderComponent from "./Rendering/RenderComponent";
@@ -16,14 +15,14 @@ const FOV:number = 90;
 export default class ScreenManager {
     
     private context2D : CanvasRenderingContext2D;
-    private context3D : THREE.WebGLRenderer;
+    private engine : BABYLON.Engine;
     private CanvasRect : DOMRect
     public get Context2D():CanvasRenderingContext2D {
         return this.context2D;
     } 
-    public Cam3D : THREE.Camera;
-    public Scene3D: THREE.Scene;
-
+    public Cam3D : BABYLON.Camera;
+    public Scene3D: BABYLON.Scene;
+    private Light: BABYLON.Light;
     constructor() {
         //#region 2dInit
         let canvas = document.getElementById('FlatCanvas') as HTMLCanvasElement;
@@ -35,16 +34,31 @@ export default class ScreenManager {
         this.context2D = temp;
         //#endregion
         //#region 3dInit
+
         let threeCanvas = document.getElementById('ThreeCanvas') as HTMLCanvasElement;
+        this.engine = new BABYLON.Engine(threeCanvas, true);
+        this.Scene3D = new BABYLON.Scene(this.engine);
+        this.Cam3D = new BABYLON.Camera("camera", BABYLON.Vector3.Zero(), this.Scene3D);
+        this.Cam3D.attachControl(threeCanvas, true);
+        BABYLON.SceneLoader.ImportMeshAsync("", "https://assets.babylonjs.com/meshes/", "box.babylon");
+        this.engine.runRenderLoop(() => {
+            this.Scene3D.render();
+        })
+        this.Light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0), this.Scene3D);
+        
+        
+        this.CanvasRect = canvas.getBoundingClientRect();
+        console.log("one");
+        /*
         this.context3D = new THREE.WebGLRenderer({canvas: threeCanvas})
         //threeCanvas.width = ACTUAL_DRAW_HEIGHT;
         //threeCanvas.height = ACTUAL_DRAW_WIDTH;
         this.context3D.setSize(ACTUAL_DRAW_WIDTH, ACTUAL_DRAW_HEIGHT);
         let elm = document.querySelector("#FlatCanvas");
-        this.CanvasRect = canvas.getBoundingClientRect();
         this.Scene3D = new THREE.Scene();
         this.Cam3D = new THREE.PerspectiveCamera(FOV, LOCAL_WIDTH/LOCAL_HEIGHT, 0.1, 1000);
         this.Cam3D.position.z=5;
+        */
         //#endregion
 
     }
@@ -67,9 +81,10 @@ export default class ScreenManager {
             if(!obj.Alive)return;
             obj.render(this);
         })
-        this.context3D.render(this.Scene3D, this.Cam3D);
+        //this.context3D.render(this.Scene3D, this.Cam3D);
     }
     public WorldPosToScreen(object:THREE.Object3D): GVector2 {
+        /*
         let vector = new THREE.Vector3;
         vector = vector.setFromMatrixPosition(object.matrixWorld);
         vector.project(this.Cam3D);
@@ -78,20 +93,19 @@ export default class ScreenManager {
         let hHalf = ACTUAL_DRAW_HEIGHT/2;
         GVect.x = (vector.x * wHalf)+wHalf;
         GVect.y = (vector.y*hHalf)+hHalf;
-        return GVect;
+        return GVect; */
+        return new GVector3(0,0,0);
     }
     public ScreenToWorldPos(pos:GVector2, Depth:number): GVector3 {
-        let x = ((pos.x/LOCAL_WIDTH)*2) -1
-        let y = 1-((pos.y/LOCAL_HEIGHT)*2) 
-        let vec = new THREE.Vector3();
-        let posS = new THREE.Vector3();
-        vec.set(x,y,0.5);
-        vec = vec.unproject(this.Cam3D);
-        vec.sub(this.Cam3D.position).normalize;
-        let distance = ( Depth - this.Cam3D.position.z ) / vec.z;
-        posS.copy(this.Cam3D.position).add(vec.multiplyScalar(distance));
-        console.log(x);
-        return new GVector3(posS.x,posS.y,posS.z);
+        let x = ((pos.x/LOCAL_WIDTH))*this.engine.getRenderWidth();
+        let y = ((pos.y/LOCAL_HEIGHT))*this.engine.getRenderHeight();
+        //let vec = new THREE.Vector3();
+        //let posS = new THREE.Vector3();
+        //vec.set(x,y,0.5);
+
+        let vec = BABYLON.Vector3.Unproject(new BABYLON.Vector3(x,y,Depth),this.engine.getRenderWidth(),this.engine.getRenderHeight(), BABYLON.Matrix.Identity(), this.Cam3D.getViewMatrix(), this.Cam3D.getProjectionMatrix());
+        return new GVector3(vec.x,vec.y,vec.z);
+        
 
     }
 }

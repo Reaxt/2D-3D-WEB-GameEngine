@@ -57,8 +57,8 @@ export default class MouseFollowEaseTest extends GameObject{
         }
         //this.box2.rotation.x += 0.1;
         //this.box2.rotation.y += 0.1;
-        this.box2.position = gameRef.ScreenManagerInstance.ScreenToWorldPos(this.box.position,-10);
-        console.log(this.box.position);
+        this.box2.position = gameRef.ScreenManagerInstance.ScreenToWorldPos(this.box.position,0.5);
+        console.log(this.box2.position);
     }
     
 }

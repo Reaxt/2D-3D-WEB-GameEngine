@@ -1,7 +1,7 @@
-import Game from "./Game.js";
-import { GameObject } from "./GameObjects/GameObject.js";
-import RenderComponent from "./Rendering/RenderComponent.js";
-import State from "./State.js";
+import Game from "./Game";
+import { GameObject } from "./GameObjects/GameObject";
+import RenderComponent from "./Rendering/RenderComponent";
+import State from "./State";
 
 export default class StateManager {
 	private States : {[key:string]: State}

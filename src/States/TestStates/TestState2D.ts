@@ -1,3 +1,4 @@
+import { Camera } from "babylonjs/Cameras/camera";
 import Game from "../../Core/Game";
 import Easing from "../../Core/GameObjects/Easing";
 import { GameObject } from "../../Core/GameObjects/GameObject";
@@ -14,6 +15,7 @@ export default class TestState2D extends StandardState {
         //test.easeManager.AddEase(new Easing([[0,0],[0,500]],4,easeOutExpo,2,false,true));
         //test.position.x = 1280;
         //test.position.y = 720-12;
+        
     }
     exit(): void {
         //throw new Error("Method not implemented.");

@@ -42,7 +42,7 @@
         #FlatCanvas {
         background-color: transparent;  /* needed because webgl-tutoraisl.css sets canvas bg color to white */
 
-        z-index: 10;
+        z-index: -10;
     }
 
 
@@ -51,10 +51,10 @@
 
 <body>
     <div id="RenderContainer">
-        <canvas id="ThreeCanvas"></canvas>
         <canvas id="FlatCanvas"></canvas>
+        <canvas id="ThreeCanvas"></canvas>
     </div>
-	<script type="module" src="./dist/bundle.js"></script>
+	<script type="module" src="./dist/app.js"></script>
 </body>
 
 </html>

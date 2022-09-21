@@ -1,6 +1,6 @@
-import Game from "./Game.js";
-import { GameObject } from "./GameObjects/GameObject.js";
-import RenderComponent from "./Rendering/RenderComponent.js";
+import Game from "./Game";
+import { GameObject } from "./GameObjects/GameObject";
+import RenderComponent from "./Rendering/RenderComponent";
 
 export default abstract class State {
 	public objects: GameObject[]
